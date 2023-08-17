@@ -37,7 +37,7 @@ public class Atores {
             this.atoresBanco = new ArrayList<>();
         }
 
-        public void adicionarCliente(Atores atores) {
+        public void adicionarAtores(Atores atores) {
             this.atoresBanco.add(atores);
         }
 
@@ -52,6 +52,24 @@ public class Atores {
 
         public List<Atores> listarAtores() {
             return new ArrayList<>(atoresBanco);
+        }
+    }
+
+    // Atores Service
+
+    public class AtoresService {
+        private AtoresRepository atoresRepository;
+
+        public AtoresService(AtoresRepository atoresRepository) {
+            this.atoresRepository = atoresRepository;
+        }
+
+        public void addAtores(Atores ator){
+            atoresRepository.adicionarAtores(ator);
+        }
+
+        public List<Atores> listarAtores(){
+            return atoresRepository.listarAtores();
         }
     }
 
