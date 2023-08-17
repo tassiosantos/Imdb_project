@@ -8,10 +8,12 @@ public class Main {
     }
 
 
-
-
     public static int menu(String[] pos){
-        while
+        while (true){
+            System.out.println("Teste commit");
+            break;
+        }
 
+        return 0;
     }
 }
