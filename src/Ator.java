@@ -6,7 +6,7 @@ public class Ator {
     private String nomeAtor;
     private Integer identificadorAtor;
     private Integer identificadorUltimoAtor = 0;
-
+    public Ator(){};
     public Ator(String nomeAtor) {
         this.nomeAtor = nomeAtor;
         this.identificadorAtor = ++identificadorUltimoAtor;
