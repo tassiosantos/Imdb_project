@@ -4,11 +4,13 @@ import java.util.List;
 public class Ator {
     //entity
     private String nomeAtor;
+    private String dataNascimento;
     private Integer identificadorAtor;
     private Integer identificadorUltimoAtor = 0;
     public Ator(){};
-    public Ator(String nomeAtor) {
+    public Ator(String nomeAtor, String dataNascimento) {
         this.nomeAtor = nomeAtor;
+        this.dataNascimento = dataNascimento;
         this.identificadorAtor = ++identificadorUltimoAtor;
     }
 
@@ -18,6 +20,12 @@ public class Ator {
 
     public void setNomeAtor(String nomeAtor) {
         this.nomeAtor = nomeAtor;
+    }
+
+    public String getDataNascimento(){ return dataNascimento;}
+
+    public void setDataNascimento(String dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 
     public Integer getIdentificadorAtor() {
@@ -30,14 +38,18 @@ public class Ator {
 
     // Repository
 
-    public class AtorRepository {
+    public static class AtorRepository {
         private List<Ator> atorBanco;
+        private Integer identificadorUltimoAtor;
 
         public AtorRepository() {
             this.atorBanco = new ArrayList<>();
+            this.identificadorUltimoAtor = 1;
         }
 
         public void adicionarAtor(Ator ator) {
+            ator.setIdentificadorAtor(identificadorUltimoAtor.intValue());
+            identificadorUltimoAtor += 1;
             this.atorBanco.add(ator);
         }
 
@@ -50,27 +62,38 @@ public class Ator {
             return null;
         }
 
-        public List<Ator> listarAtor() {
+        public ArrayList<Ator> listarAtor() {
             return new ArrayList<>(atorBanco);
         }
     }
 
     // Atores Service
 
-    public class AtorService {
-        private AtorRepository atorRepository;
+    public static class AtorService {
+        private static AtorRepository atorRepository = new AtorRepository();
 
         public AtorService(AtorRepository atorRepository) {
             this.atorRepository = atorRepository;
         }
 
-        public void addAtores(Ator ator){
+        public static void addAtores(Ator ator){
             atorRepository.adicionarAtor(ator);
         }
 
-        public List<Ator> listarAtor(){
+        public static ArrayList<Ator> listarAtor(){
             return atorRepository.listarAtor();
         }
+
+        public static Ator buscarAtorById(int idAtor){
+            for (Ator ator: atorRepository.listarAtor()){
+                if(ator.getIdentificadorAtor() == idAtor){
+                    return ator;
+                }
+            }
+            return null;
+        }
+
+
     }
 
 }

@@ -1,19 +1,72 @@
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.util.Scanner;
+
+//Adicionei dtNascimento para atores;
+//Retirei DiretorService de dentro de DiretorRepository
+//
 public class Main {
-    public static void main(String[] args) {
+    public static MenuController menuController = new MenuController();
+
+    public static void main(String[] args) throws IOException {
+        while(true) {
+            menuController.exibirMenuInicial();
+            int escolha = menuController.selecionarEscolha();
+            switch (escolha) {
+                case (1):
+                    menuController.exibirMenuAtor();
+                    escolha = menuController.selecionarEscolha();
+                    switch (escolha) {
+                        case (1):
+                            menuController.listarAtor();
+                            break;
+                        case (2):
+                            menuController.cadastrarAtor();
+                            break;
+                        case (3):
+                            menuController.vincularAtor();
+                            break;
+
+                    }
+                    break;
+                case (2):
+                    menuController.exibirMenuDiretor();
+                    escolha = menuController.selecionarEscolha();
+                    switch (escolha) {
+                        case (1):
+                            menuController.listarDiretor();
+                            break;
+                        case (2):
+                            menuController.cadastrarDiretor();
+                            break;
+                        case (3):
+                            menuController.vincularDiretor();
+                            break;
+                    }
+                    break;
+                case (3):
+                    menuController.exibirMenuFilme();
+                    escolha = menuController.selecionarEscolha();
+                    switch (escolha) {
+                        case (1):
+                            menuController.listarFilmes();
+                            break;
+                        case (2):
+                            menuController.buscarFilmesPorNome();
+                            break;
+                        case (3):
+                            menuController.cadastrarFilme();
+
+                    }
+                    break;
+            }
 
 
-
-    }
-
-
-    public static int menu(String[] pos){
-        while (true){
-            System.out.println("Teste commit");
-            break;
         }
 
-        return 0;
+
+
     }
+
 }
