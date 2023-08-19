@@ -1,32 +1,29 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Diretor {
-    private String nomeDiretor;
-    private Integer idDiretor;
-//    private Integer anoDiretor;
-    private String anoDiretor;
+public class Diretor extends Artista{
 
+    private Integer idDiretor;
     private Integer idUltimoDiretor = 0;
 
-    public Diretor(){}
+    public Diretor(){
+        super();
+    }
 
     public Diretor (String nomeDiretor, String anoDiretor){
-        this.nomeDiretor = nomeDiretor;
-        this.idDiretor = ++idDiretor;
-        this.anoDiretor = anoDiretor;
+        this.nome = nomeDiretor;
+
+        this.anoNascimento = anoDiretor;
     }
-    public String getNomeDiretor(){
-        return nomeDiretor;
-    }
-    public void setNomeDiretor (String nomeDiretor){
-        this.nomeDiretor = nomeDiretor;
+    public String getNome(){
+        return this.nome;
     }
 
-//    public void setAnoDiretor (Integer anoDiretor){
-//        this.anoDiretor = anoDiretor;
-//    }
-    public void setAnoDiretor(String anoDiretor){this.anoDiretor = anoDiretor;}
+    public void setNome (String nomeDiretor){
+        this.nome = nomeDiretor;
+    }
+
+    public void setAnoNascimento(String anoDiretor){this.anoNascimento = anoDiretor;}
 
     public Integer getIdDiretor(){
         return idDiretor;
@@ -35,20 +32,32 @@ public class Diretor {
     public void setIdDiretor(Integer idDiretor) {
         this.idDiretor = idDiretor;
     }
+
+    @Override
+    public String imprimir() {
+        return ("ID: " + idDiretor + "\nNome: " + nome + "\nAno de nascimento: " + anoNascimento);
+    }
+
     //Repositório
     public static class DiretorRepository{
         private List<Diretor> diretorList;
+        private int ultimoId;
 
         public DiretorRepository(){
             this.diretorList = new ArrayList<>();
+            this.ultimoId = 1;
         }
+
         public void addDiretor(Diretor diretor){
+            diretor.setIdDiretor(this.ultimoId);
+            this.ultimoId++;
             this.diretorList.add(diretor);
+
         }
 
         public Diretor buscarDiretor(Integer idDiretor, String nomeDiretor){
             for (Diretor diretor : diretorList){
-                if ((diretor.getIdDiretor()).equals(idDiretor) && diretor.getNomeDiretor().equalsIgnoreCase(nomeDiretor)){
+                if ((diretor.getIdDiretor()).equals(idDiretor) && diretor.getNome().equalsIgnoreCase(nomeDiretor)){
             return diretor;
                 }
             }

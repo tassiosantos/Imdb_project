@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class MenuController {
@@ -50,7 +49,7 @@ public class MenuController {
         System.out.println("____________________________________________________");
         System.out.println("Digite o nome do ator");
         String nomeAtor = scan.nextLine();
-        System.out.println("Digite a data de nascimento do ator");
+        System.out.println("Digite o ano de nascimento do ator");
         String dataNascimento = scan.nextLine();
         Ator novoAtor = new Ator(nomeAtor, dataNascimento);
         Ator.AtorService.addAtores(novoAtor);
@@ -62,11 +61,11 @@ public class MenuController {
         System.out.println("____________________________________________________");
         System.out.println("Digire o nome do diretor");
         String nomeDiretor = scan.nextLine();
-        System.out.println("Digite a data de nascimento do diretor");
+        System.out.println("Digite o ano de nascimento do diretor");
         String dataNascimento = scan.next();
         Diretor novoDiretor = new Diretor(nomeDiretor, dataNascimento);
         Diretor.DiretorService.addDiretor(novoDiretor);
-        System.out.println("Diretor:" + novoDiretor.getNomeDiretor() + " cadastrado com sucesso.");
+        System.out.println("Diretor:" + novoDiretor.getNome() + " cadastrado com sucesso.");
         System.out.println("____________________________________________________");
     }
 
@@ -177,7 +176,8 @@ public class MenuController {
         if(!diretores.isEmpty()) {
             System.out.println("Lista de diretores cadastrados");
             for (Diretor diretor : diretores) {
-                System.out.println("Id " + diretor.getIdDiretor() + " - " + diretor.getNomeDiretor());
+                System.out.println(diretor.imprimir());
+                System.out.println("_________________________________________");
             }
             System.out.println("____________________________________________________");
         }else{
