@@ -1,31 +1,37 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ator {
+public class Ator extends Artista {
     //entity
-    private String nomeAtor;
-    private String dataNascimento;
     private Integer identificadorAtor;
     private Integer identificadorUltimoAtor = 0;
-    public Ator(){};
+
+    public Ator() {
+        super();
+    }
+
+    ;
+
     public Ator(String nomeAtor, String dataNascimento) {
-        this.nomeAtor = nomeAtor;
-        this.dataNascimento = dataNascimento;
+        this.nome = nomeAtor;
+        this.anoNascimento = dataNascimento;
         this.identificadorAtor = ++identificadorUltimoAtor;
     }
 
-    public String getNomeAtor() {
-        return nomeAtor;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNomeAtor(String nomeAtor) {
-        this.nomeAtor = nomeAtor;
+    public void setNome(String nomeAtor) {
+        this.nome = nomeAtor;
     }
 
-    public String getDataNascimento(){ return dataNascimento;}
+    public String getAnoNascimento() {
+        return anoNascimento;
+    }
 
-    public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setAnoNascimento(String anoNascimento) {
+        this.anoNascimento = anoNascimento;
     }
 
     public Integer getIdentificadorAtor() {
@@ -34,6 +40,11 @@ public class Ator {
 
     public void setIdentificadorAtor(Integer identificadorAtor) {
         this.identificadorAtor = identificadorAtor;
+    }
+
+    @Override
+    public String imprimir() {
+        return ("ID: " + identificadorAtor + "\nNome: " + nome + "\nAno de nascimento: " + anoNascimento);
     }
 
     // Repository
@@ -55,7 +66,7 @@ public class Ator {
 
         public Ator buscarAtor(Integer identificadorAtor, String nomeAtor) {
             for (Ator ator : atorBanco) {
-                if (ator.getIdentificadorAtor().equals(identificadorAtor) && ator.getNomeAtor().equals(nomeAtor)) {
+                if (ator.getIdentificadorAtor().equals(identificadorAtor) && ator.getNome().equals(nomeAtor)) {
                     return ator;
                 }
             }
@@ -76,23 +87,22 @@ public class Ator {
             this.atorRepository = atorRepository;
         }
 
-        public static void addAtores(Ator ator){
+        public static void addAtores(Ator ator) {
             atorRepository.adicionarAtor(ator);
         }
 
-        public static ArrayList<Ator> listarAtor(){
+        public static ArrayList<Ator> listarAtor() {
             return atorRepository.listarAtor();
         }
 
-        public static Ator buscarAtorById(int idAtor){
-            for (Ator ator: atorRepository.listarAtor()){
-                if(ator.getIdentificadorAtor() == idAtor){
+        public static Ator buscarAtorById(int idAtor) {
+            for (Ator ator : atorRepository.listarAtor()) {
+                if (ator.getIdentificadorAtor() == idAtor) {
                     return ator;
                 }
             }
             return null;
         }
-
 
     }
 
