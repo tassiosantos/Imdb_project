@@ -1,3 +1,5 @@
+import com.sun.security.jgss.GSSUtil;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -30,7 +32,7 @@ public class MenuController {
     public void exibirMenuDiretor() {
         System.out.println("1 - Exibir diretores cadastrados.");
         System.out.println("2 - Cadastrar diretor");
-        System.out.printf("3 - Registrar diretor em um filme.");
+        System.out.println("3 - Registrar diretor em um filme.");
     }
 
     public void exibirMenuInicial() {
@@ -38,6 +40,11 @@ public class MenuController {
         System.out.println("1 - Ator");
         System.out.println("2 - Diretor");
         System.out.println("3 - Filme");
+    }
+
+    public void exibirSimNao(){
+        System.out.println("1 - Sim");
+        System.out.println("2 - Não");
     }
 
     public int selecionarEscolha() {
@@ -92,58 +99,97 @@ public class MenuController {
 
 
     public void vincularDiretor() {
-        System.out.println("____________________________________________________");
-        System.out.println("Digite o nome do filme que deseja incluir o diretor.");
-        listarFilmes();
-        String nomeFilme = scan.nextLine();
-        if (verificarFilme(nomeFilme)) {
-            System.out.println("Digite o ID do diretor que deseja vincular:");
-            listarDiretor();
-            Integer idDiretor = scan.nextInt();
-            scan.nextLine();
+        if(!filmes.isEmpty()) {
+            if(!Diretor.DiretorService.listarDiretor().isEmpty()) {
+                System.out.println("____________________________________________________");
+                System.out.println("Digite o nome do filme que deseja incluir o diretor.");
+                listarFilmes();
+                String nomeFilme = scan.nextLine();
+                if (verificarFilme(nomeFilme)) {
+                    System.out.println("###############################");
+                    ArrayList<Diretor> diretores = listarDiretor();
+                    System.out.println("###############################");
+                    if (!diretores.isEmpty()) {
+                        System.out.println("Digite o ID do diretor que deseja vincular:");
+                        Integer idDiretor = scan.nextInt();
+                        scan.nextLine();
+                        Diretor diretor = Diretor.DiretorService.buscarDiretorById(idDiretor);
+                        if (diretor != null) {
+                            for (Filme filme : this.filmes) {
+                                if (filme.getNome().equalsIgnoreCase(nomeFilme)) {
+                                    if (!filme.cadastrarDiretor(diretor)) {
+                                        System.out.println("Filme já contém um diretor cadastrado.");
+                                        System.out.println("____________________________________________________");
+                                    } else {
+                                        System.out.println("Diretor adicionado com sucesso.");
+                                        System.out.println("____________________________________________________");
+                                    }
 
-            for (Filme filme : this.filmes) {
-                if (filme.getNome().equalsIgnoreCase(nomeFilme)) {
-                    if (!filme.cadastrarDiretor(Diretor.DiretorService.buscarDiretorById(idDiretor))) {
-                        System.out.println("Filme já contém um diretor cadastrado.");
-                        System.out.println("____________________________________________________");
-                    } else {
-                        System.out.println("Diretor adicionado com sucesso.");
-                        System.out.println("____________________________________________________");
+                                }
+                            }
+                        } else {
+                            System.out.println("Não existe diretor com esse ID.");
+                        }
                     }
 
                 }
+            }else{
+                System.out.println("Lista de diretor vazia.");
             }
+        }else{
+            System.out.println("Lista de filmes vazia.");
         }
     }
 
     public void vincularAtor() {
         if (!filmes.isEmpty()) {
-            System.out.println("____________________________________________________");
-            System.out.println("Digite o nome do filme que deseja incluir o ator.");
-            listarFilmes();
-            String nomeFilme = scan.nextLine();
-            if (verificarFilme(nomeFilme)) {
-                System.out.println("Digite o ID do ator que deseja vincular:");
-                listarAtor();
-                Integer idAtor = scan.nextInt();
-                scan.nextLine();
-                Ator ator = Ator.AtorService.buscarAtorById(idAtor);
-                for (Filme filme : this.filmes) {
-                    if (filme.getNome().equalsIgnoreCase(nomeFilme)) {
-                        ArrayList<Ator> atores = filme.getAtores();
-                        for (int i = 0; i < atores.size(); i++) {
-                            if (ator.getIdentificadorAtor() == atores.get(i).getIdentificadorAtor()) {
-                                System.out.println("Ator já cadastrado");
-                                break;
-                            }
-                            if (i == atores.size() - 1) {
-                                filme.cadastrarAtor(ator);
-                            }
-                        }
+            if(!Ator.AtorService.listarAtor().isEmpty()) {
+                System.out.println("____________________________________________________");
+                System.out.println("Lista de filmes cadastrados:");
+                listarFilmes();
+                System.out.println("Digite o nome do filme que deseja incluir o ator.");
+                String nomeFilme = scan.nextLine();
+                if (verificarFilme(nomeFilme)) {
+                    System.out.println("###############################");
+                    ArrayList<Ator> listaAtores = listarAtor();
+                    System.out.println("###############################");
+                    if (!listaAtores.isEmpty()) {
+                        System.out.println("Digite o ID do ator que deseja vincular:");
+                        Integer idAtor = scan.nextInt();
+                        scan.nextLine();
+                        Ator ator = Ator.AtorService.buscarAtorById(idAtor);
+                        if (ator != null) {
+                            for (Filme filme : this.filmes) {
+                                if (filme.getNome().equalsIgnoreCase(nomeFilme)) {
+                                    ArrayList<Ator> atores = filme.getAtores();
+                                    if (!atores.isEmpty()) {
+                                        boolean existeAtor = false;
+                                        for (int i = 0; i < atores.size(); i++) {
+                                            if (ator.getIdentificadorAtor() == atores.get(i).getIdentificadorAtor()) {
+                                                System.out.println("Ator já cadastrado");
+                                                existeAtor = true;
+                                                break;
+                                            }
 
+                                        }
+                                        if (!existeAtor) {
+                                            filme.cadastrarAtor(ator);
+                                            System.out.println(ator.getNome() + " cadastrado no elenco de: " + filme.getNome());
+                                        }
+
+                                    } else {
+                                        filme.cadastrarAtor(ator);
+                                    }
+
+                                }
+                            }
+                        } else {
+                            System.out.println("Não existe ator com esse ID.");
+                        }
                     }
                 }
+            }else{
+                System.out.println("Lista de atores vazia.");
             }
         } else {
             System.out.println("Lista de filmes vazia.");
@@ -151,7 +197,7 @@ public class MenuController {
     }
 
 
-    public void listarAtor() {
+    public ArrayList<Ator> listarAtor() {
         System.out.println("____________________________________________________");
 
         ArrayList<Ator> atores = Ator.AtorService.listarAtor();
@@ -166,9 +212,10 @@ public class MenuController {
             System.out.println("Lista de atores vazia.");
             System.out.println("____________________________________________________");
         }
+        return atores;
     }
 
-    public void listarDiretor() {
+    public ArrayList<Diretor> listarDiretor() {
         System.out.println("____________________________________________________");
 
         ArrayList<Diretor> diretores = Diretor.DiretorService.listarDiretor();
@@ -183,6 +230,7 @@ public class MenuController {
             System.out.println("Lista de diretores vazia");
             System.out.println("____________________________________________________");
         }
+        return diretores;
     }
 
     public void listarFilmes() {
@@ -191,7 +239,7 @@ public class MenuController {
                 System.out.println("____________________________________________________");
                 System.out.println("Nome: " + filme.getNome());
                 if (filme.getDiretor() != null) {
-                    System.out.println("Diretor: " + filme.getDiretor());
+                    System.out.println("Diretor: " + filme.getDiretor().getNome());
                 }
                 if (!filme.getAtores().isEmpty()) {
                     System.out.println("Atores: ");
@@ -208,18 +256,23 @@ public class MenuController {
         }
     }
 
-    public ArrayList<Filme> buscarFilmesPorNome() {
+    public void buscarFilmesPorNome() {
         if (!filmes.isEmpty()) {
-            System.out.println("____________________________________________________");
             System.out.println("Digite o nome do filme que deseja buscar:");
             String nomeFilme = scan.nextLine();
             System.out.println("Filmes contendo esse nome: ");
-            return listarFilmesPorNome(nomeFilme);
+            ArrayList<Filme> filmesPorNome = listarFilmesPorNome(nomeFilme);
+            if(filmesPorNome.isEmpty()){
+                System.out.println("Não existe filme cadastrado com esse nome.");
+            }
+            System.out.println("____________________________________________________");
+            buscarFilmeEspecifico(filmesPorNome);
         } else {
             System.out.println("Lista de filmes vazia.");
-            return null;
+
         }
     }
+
 
     public ArrayList<Filme> listarFilmesPorNome(String nomeFilme) {
         ArrayList<Filme> filmesBuscados = new ArrayList<>();
@@ -229,8 +282,51 @@ public class MenuController {
                 System.out.println(filme.getNome());
             }
         }
-        System.out.println("____________________________________________________");
         return filmesBuscados;
+    }
+
+    public void buscarFilmeEspecifico(ArrayList<Filme> listaFilmes){
+        System.out.println("Deseja detalhes de algum filme da lista?");
+        exibirSimNao();
+        int escolha = scan.nextInt();
+        scan.nextLine();
+        if(escolha == 1){
+            System.out.println("Digite o nome do filme que deseja detalhes");
+            String nomeFilme = scan.nextLine();
+            boolean filmeExiste = false;
+            Filme filmeEscolhido = null;
+            for(Filme filme: listaFilmes){
+                if(filme.getNome().equalsIgnoreCase(nomeFilme)){
+                    filmeEscolhido = filme;
+                    filmeExiste = true;
+                }
+            }
+            if(filmeExiste){
+                System.out.println("Informações sobre " + filmeEscolhido.getNome() + ":");
+                System.out.println("____________________________________________________");
+                System.out.println("Nome: " + filmeEscolhido.getNome() );
+                System.out.println("Ano: " + filmeEscolhido.getData_lancamento());
+                if (filmeEscolhido.getDiretor() != null) {
+                    System.out.println("Diretor: " + filmeEscolhido.getDiretor().getNome());
+                }
+                if (!filmeEscolhido.getAtores().isEmpty()) {
+                    System.out.println("Atores: ");
+                    for (Ator ator : filmeEscolhido.getAtores()) {
+                        System.out.println(" - " + ator.getNome());
+                    }
+                }
+                System.out.println("Descrição: " + filmeEscolhido.getDescricao());
+                System.out.println("Orçamento: " + filmeEscolhido.getOrcamento());
+                System.out.println("____________________________________________________");
+            }else{
+                System.out.println("O filme não consta na lista acima.");
+            }
+
+        }else if(escolha == 2){
+            System.out.println("Retornando ao menu inicial.");
+        }else{
+            System.out.println("Escolha inválida.");
+        }
     }
 
 
